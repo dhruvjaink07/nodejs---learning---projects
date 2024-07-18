@@ -1,7 +1,6 @@
 // This code is fully based on the event loop architecture's understanding
 /*
 as the flow says the the settimeouts will be executed first the the 
-I/O operations will be performed and after completion of each phase when there is any micro-task left like procecc.nextTick() then it will be executed to be continued to next phase
 */
 
 const fs = require("fs");
