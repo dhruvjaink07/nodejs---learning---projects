@@ -25,7 +25,7 @@ app.get('/api/v1/tours', (req, res) => {
     .json({ status: 'success', result: tours.length, data: { tours: tours } });
 });
 
-app.get('/api/v1/tours/:id/:what?',(req,res) => {
+app.get('/api/v1/tour/:id/:what?',(req,res) => {
   console.log(req.params);
   const id = req.params.id * 1; // This is the way to get the parameters from the url and using the '?' this sign we can also declare optional url parameters // and multiplying it with 1 automatically converts the String to int if the value of String is 1
   const tour = tours.find(el => el.id == id);
@@ -57,9 +57,36 @@ app.post('/api/v1/tours', (req, res) => {
           });
     }
   );
-
-  
 });
+
+// Patch Request
+app.patch('/api/v1/tour/:id',(req,res)=>{
+  console.log(req.params);
+  const id = req.params.id * 1;
+  if(id > tours.length){
+    return res.status(400).send({status : 'fail',data:null});
+  }
+
+  res.status(200).json({status:'success',data:{
+    tour: '<Updated tour>'
+  }})
+});
+
+// Dalete Request
+app.delete('/api/v1/tour/:id',(req,res)=>{
+  console.log(req.params);
+  const id = req.params.id * 1;
+  if(id > tours.length){
+    return res.status(400).send({status : 'fail',data:{
+      message: 'Invalid tour ID'
+    }});
+  }
+
+  res.status(204).json({status:'success',data:{
+    tour: null
+  }})
+});
+
 const port = 3000;
 app.listen(port, () => {
   console.log(`Running on port ${port}...`);
