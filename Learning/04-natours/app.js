@@ -1,18 +1,39 @@
 const fs = require('fs');
 const express = require('express');
+const morgan = require('morgan');
 
 const app = express();
 
+// 1) MiddleWare
+app.use(morgan('dev'));
 app.use(express.json()); // This is called Middle ware
 
+app.use((req, res, next) => {
+  console.log('Hey from Middleware');
+  next();
+});
+
+app.use((req, res, next) => {
+  req.requestTime = new Date().toLocaleString();
+  next();
+});
 const tours = JSON.parse(
   fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`)
 );
 
+const users = JSON.parse(
+  fs.readFileSync(`${__dirname}/dev-data/data/users.json`)
+);
+
+// 2) Route Handlers (Tours)
 const getALlTours = (req, res) => {
-  res
-    .status(200)
-    .json({ status: 'success', result: tours.length, data: { tours: tours } });
+  console.log(`request time: ${req.requestTime}`);
+  res.status(200).json({
+    status: 'success',
+    time: req.requestTime,
+    result: tours.length,
+    data: { tours: tours },
+  });
 };
 
 const getTour = (req, res) => {
@@ -87,15 +108,44 @@ const deleteTour = (req, res) => {
   });
 };
 
-// app.get('/api/v1/tours',getALlTours);
-// app.post('/api/v1/tours', createTour);
-// app.get('/api/v1/tour/:id', getTour);
-// app.patch('/api/v1/tour/:id', updateTour);
-// app.delete('/api/v1/tour/:id', deleteTour);
+// 2) Route Handlers (Users)
+const getAllUsers = (req, res) => {
+  console.log(req.hostname);
+  console.log(req.ip);
+  res.status(200).json({
+    status: 'success',
+    data: {
+      users,
+    },
+  });
+};
+
+const createUser = (req, res) => {
+  res.status(500).json({ status: 'error', data: 'This route is not yet available'});
+};
+
+const getOneUser = (req,res) => {
+  res.status(500).json({ status: 'error', data: 'This route is not yet available'});
+};
+
+const updateUser = (req,res) => {
+  res.status(500).json({ status: 'error', data: 'This route is not yet available'});
+};
+
+const deleteUser = (req,res) => {
+  res.status(500).json({ status: 'error', data: 'This route is not yet available'});
+};
+// 3) Routes
 
 app.route('/api/v1/tours').get(getALlTours).post(createTour);
 app.route('/api/v1/tour/:id').get(getTour).patch(updateTour).delete(deleteTour);
-
+app.route('/api/v1/users').get(getAllUsers).post(createUser);
+app
+  .route('/api/v1/users/:id')
+  .get(getOneUser)
+  .patch(updateUser)
+  .delete(deleteUser);
+//4) Start Server
 const port = 3000;
 app.listen(port, () => {
   console.log(`Running on port ${port}...`);
