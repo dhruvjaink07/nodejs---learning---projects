@@ -4,7 +4,7 @@
   "description": "Project from Nodejs course",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "nodemon server.js"
   },
   "author": "Dhruv Jain",
   "license": "ISC",
