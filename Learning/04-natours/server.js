@@ -4,7 +4,9 @@ const app = require('./app');
 
 env.config({path: './config.env'});
 
-const DB = process.env.DATABASE.replace("<PASSWORD>", process.env.DATABASE_PASSWORD);
+// const DB = process.env.DATABASE.replace("<PASSWORD>", process.env.DATABASE_PASSWORD);
+
+const DB = process.env.DATABASE_LOCAL; 
 
 mongoose.connect(DB, {
   useNewUrlParser: true,
@@ -12,6 +14,7 @@ mongoose.connect(DB, {
   useCreateIndex:true,
   useFindAndModify:true
 }).then(con => console.log('DB Connection successful')).catch(err=>console.log("Error Connecting Database"));
+
 
 const port = 3000;
 app.listen(port, () => {
