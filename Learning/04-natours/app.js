@@ -8,6 +8,7 @@ const app = express();
 // 1) MiddleWare
 app.use(morgan('dev'));
 app.use(express.json()); // This is called Middle ware
+app.use(express.static(`${__dirname}/public`)) // Use to server static files
 
 app.use((req, res, next) => {
   console.log('Hey from Middleware');
