@@ -1,65 +1,96 @@
-// const fs = require('fs');
+const Tour = require('./../models/tourModel');
 
-// const tours = JSON.parse(
-//   fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`)
-// );
-
-// 2) Route Handlers (Tours)
-
-exports.checkReqBody = (req, res, next)=>{
-    // if(req.body['name'] == null  || req.body['price'] == null){
-    //     return res.status(400).json({
-    //         status: 'fail',
-    //         message: 'filed name and price are required'
-    //     });
-    // } // My Logic 
-    if(!req.body.name || !req.body.price){
-        return res.status(400).json({
-                    status: 'fail',
-                    message: 'Missing name or price fields'
-                });                
-    }
-
-    next();
-}
-
-exports.getALlTours = (req, res) => {
-  console.log(`request time: ${req.requestTime}`);
+exports.getALlTours = async (req, res) => {
+try{
+  const allTours = await Tour.find();
   res.status(200).json({
     status: 'success',
-    time: req.requestTime,
+    result: allTours.length,
+    data: {
+      allTours
+    }
   });
+}catch(err){
+  res.status(400).json({
+    status:'fail',
+    message: err
+  })
+}
 };
 
-exports.getTour = (req, res) => {
-  const id = req.params.id * 1; // This is the way to get the parameters from the url and using the '?' this sign we can also declare optional url parameters // and multiplying it with 1 automatically converts the String to int if the value of String is 1
-
-
+exports.getTour = async (req, res) => {
+try{
+  const id = req.params.id; // This is the way to get the parameters from the url and using the '?' this sign we can also declare optional url parameters // and multiplying it with 1 automatically converts the String to int if the value of String is 1
+  const tour = await Tour.findById(id);
+  if(tour){
   res.status(200).send({
     status: 'success',
     data: {
-    },
-  });
+    tour},
+  });}
+  else{
+    res.status(400).json({
+      status:'fail',
+      message:'Tour Not Found'
+    })
+  }
+}catch(err){
+  res.status(400).json({
+    status:'fail',
+    message:err
+  })
+}
 };
 
-exports.createTour = (req, res) => {
+exports.createTour = async (req, res) => {
+  try {
+    const newTour = await Tour.create(req.body);
 
+    res.status(201).json({
+      status: 'success',
+      data: {
+        tour: newTour,
+      },
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: 'fail',
+      message: 'Invalid Data Set',
+    });
+  }
 };
 
-exports.updateTour = (req, res) => {
+exports.updateTour = async (req, res) => {
+try{
+  const id = req.params.id;
+  const tour = await Tour.findByIdAndUpdate(id,req.body, {new:true,runValidators:true})
   res.status(200).json({
     status: 'success',
     data: {
-      tour: '<Updated tour>',
+      tour
     },
   });
+}catch(err){
+  res.status(400).json({
+    status:'fail',
+    message:err
+  });
+}
 };
 
-exports.deleteTour = (req, res) => {
+exports.deleteTour = async (req, res) => {
+try{
+  const id = req.params.id;
+  await Tour.findByIdAndDelete(id);
+
   res.status(204).json({
     status: 'success',
-    data: {
-      tour: null,
-    },
+    message:'Tour Deleted Successful'
   });
+}catch(err){
+  res.status(400).json({
+    status:'fail',
+    message:err
+  });
+}
 };
