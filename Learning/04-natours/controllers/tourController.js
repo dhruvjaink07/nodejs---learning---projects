@@ -3,19 +3,27 @@ const Tour = require('./../models/tourModel');
 exports.getALlTours = async (req, res) => {
 try{
   // BUILDING QUERY
-  // 1) Filtering
+  // 1A) Filtering
   const queryObj = {...req.query};
   const excludedFields = ['page','sort','limit','fields'];
   excludedFields.forEach(el=> delete queryObj[el]);
 
-  // 2) Advance Filtering
+  // 1B) Advance Filtering
   // Very Useful for getting the exact data on user's preference 
   // So on the API we can do comparisions like greater than equal, greater, lesser, lesser then equal and much more
   let queryStr = JSON.stringify(queryObj);
   queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, match => `$${match}`);
-  console.log(JSON.parse(queryStr));
 
-  const query = Tour.find(JSON.parse(queryStr));
+  let query = Tour.find(JSON.parse(queryStr));
+  // 2) Sorting
+  if(req.query.sort){
+    const sortBy = req.query.sort.split(',').join(' ');
+    query = query.sort(sortBy);
+    // To avoid sorting conflicts we can do like this
+    // sort('price,ratingsAverage')
+  }else{
+    query=query.sort('-createdAt')
+  }
   // const allTours = await Tour.find().where('duration').equals(5).where('difficulty').equals('easy');
 
   // EXECUTING QUERY
