@@ -44,7 +44,8 @@ const tourScheme = new mongoose.Schema({
   priceDiscount: Number,
   createdAt: {
     type: Date,
-    default: Date.now()
+    default: Date.now(),
+    select: false
   },
   startDates: [Date],
 

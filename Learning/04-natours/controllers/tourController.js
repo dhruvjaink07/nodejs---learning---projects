@@ -2,6 +2,7 @@ const Tour = require('./../models/tourModel');
 
 exports.getALlTours = async (req, res) => {
 try{
+  console.log(req.query)
   // BUILDING QUERY
   // 1A) Filtering
   const queryObj = {...req.query};
@@ -26,6 +27,24 @@ try{
   }
   // const allTours = await Tour.find().where('duration').equals(5).where('difficulty').equals('easy');
 
+  // 3) Field Limiting
+  if(req.query.fields){
+    const fields = req.query.fields.split(',').join(' ');
+    query = query.select(fields);
+  }else{
+    query = query.select('-__v');
+  }
+
+  // 4) Pagination
+  const page = req.query.page * 1 || 1; // also a way to define default value in javascript
+  const limit = req.query.limit * 1 || 100
+  const skip = (page - 1) * limit;
+  // ?page=2&limit=10 i.e. 1-10, page-1, 11-20, page-2, 21-30 page-3
+  query = query.skip(skip).limit(limit);
+  if(req.query.page){
+    const newTours = await Tour.countDocuments();
+    if(skip >= newTours) throw new Error('This page does not exist')
+  }
   // EXECUTING QUERY
   const allTours = await query;
 
