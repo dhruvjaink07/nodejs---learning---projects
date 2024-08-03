@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 // Tour Scheme
-const tourScheme = new mongoose.Schema({
+const tourSchema = new mongoose.Schema({
   name: {
     type: String,
     required: [true, 'A tour must Have a name'],
@@ -48,10 +48,16 @@ const tourScheme = new mongoose.Schema({
     select: false
   },
   startDates: [Date],
-
-
+},{
+  toJSON: {virtuals: true},
+  toObject: {virtuals: true}, 
 });
+// Cannot use this virtual properties in the query as they are not really a part of the database
+// this could also be done in the controller but as the mvc architecture says to offload most of the business logic in the models and keep the controllers as simple as possible
+tourSchema.virtual('durationWeeks').get(function(){
+  return this.duration / 7;
+})
 
-const Tour = mongoose.model('Tour', tourScheme);
+const Tour = mongoose.model('Tour', tourSchema);
 
 module.exports = Tour;
