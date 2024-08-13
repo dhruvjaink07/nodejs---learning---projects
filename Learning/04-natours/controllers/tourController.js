@@ -46,9 +46,11 @@ exports.getTour = async (req, res) => {
         },
       });
     } else {
-      res.status(400).json({
-        status: 'fail',
-        message: 'Tour Not Found',
+      res.status(200).json({
+        status: 'success',
+        data: {
+          tour,
+        },
       });
     }
   } catch (err) {
@@ -192,8 +194,8 @@ exports.getMonthlyPlan = async (req, res) => {
         $sort: { numTourStarts: -1 },
       },
       {
-        $limit: 12
-      }
+        $limit: 12,
+      },
     ]);
     res.status(200).json({
       status: 'success',
