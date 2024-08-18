@@ -1,3 +1,4 @@
+const AppError = require('../utils/appError');
 const Tour = require('./../models/tourModel');
 const ApiFeatures = require('./../utils/apiFeatures');
 const catchAsync = require('./../utils/catchAsync');
@@ -31,21 +32,16 @@ exports.getALlTours = catchAsync(async (req, res) => {
 exports.getTour = catchAsync(async (req, res) => {
     const id = req.params.id; // This is the way to get the parameters from the url and using the '?' this sign we can also declare optional url parameters // and multiplying it with 1 automatically converts the String to int if the value of String is 1
     const tour = await Tour.findById(id);
-    if (tour) {
+
+    if(!tour){
+      return next(new AppError('No tour found with that ID',404));
+    }
       res.status(200).send({
         status: 'success',
         data: {
           tour,
         },
       });
-    } else {
-      res.status(200).json({
-        status: 'success',
-        data: {
-          tour,
-        },
-      });
-    }
 });
 
 exports.createTour = catchAsync(async (req, res,next) => {
@@ -65,6 +61,9 @@ exports.updateTour = catchAsync(async (req, res) => {
       new: true,
       runValidators: true,
     });
+    if(!tour){
+      return next(new AppError('No tour found with that ID',404));
+    }
     res.status(200).json({
       status: 'success',
       data: {
@@ -75,7 +74,11 @@ exports.updateTour = catchAsync(async (req, res) => {
 
 exports.deleteTour = catchAsync(async (req, res) => {
     const id = req.params.id;
-    await Tour.findByIdAndDelete(id);
+    const tour = await Tour.findByIdAndDelete(id);
+
+    if(!tour){
+      return next(new AppError('No tour found with that ID',404));
+    }
 
     res.status(204).json({
       status: 'success',
