@@ -13,10 +13,18 @@ mongoose.connect(DB, {
   useUnifiedTopology:true,
   useCreateIndex:true,
   useFindAndModify:true
-}).then(con => console.log('DB Connection successful')).catch(err=>console.log("Error Connecting Database"));
+}).then(con => console.log('DB Connection successful'))
 
 
 const port = 3000;
-app.listen(port, () => {
+const server = app.listen(port, () => {
   console.log(`Running on port ${port}...`);
+});
+
+process.on('unhandledRejection',err=>{
+  console.log(err.name, err.message);
+  console.log('UNHANDLED REJECTION! 💥 Shutting down...');
+  server.close(()=>{
+    process.exit(1);
+  });
 });
