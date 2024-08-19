@@ -4,6 +4,10 @@ const app = require('./app');
 
 env.config({path: './config.env'});
 
+process.on('uncaughtException',err=>{
+  console.log('UNCAUGHT EXCEPTION! 💥 ...');
+  console.log(err.name, err.message);
+});
 // const DB = process.env.DATABASE.replace("<PASSWORD>", process.env.DATABASE_PASSWORD);
 
 const DB = process.env.DATABASE_LOCAL; 
@@ -13,7 +17,7 @@ mongoose.connect(DB, {
   useUnifiedTopology:true,
   useCreateIndex:true,
   useFindAndModify:true
-}).then(con => console.log('DB Connection successful'))
+}).then(con => console.log('DB Connection successful')).catch(err=>console.log("Error Connecting Database"));
 
 
 const port = 3000;
