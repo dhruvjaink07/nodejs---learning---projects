@@ -1,20 +1,18 @@
-const fs = require('fs');
+const User = require('./../models/userModel');
+const APIFeatures = require('./../utils/apiFeatures');
+const catchAsync = require('./../utils/catchAsync');
 
-const users = JSON.parse(
-  fs.readFileSync(`${__dirname}/../dev-data/data/users.json`)
-);
 
 // 2) Route Handlers (Users)
-exports.getAllUsers = (req, res) => {
-  console.log(req.hostname);
-  console.log(req.ip);
+exports.getAllUsers = catchAsync(async(req, res) => {
+  const users = await User.find();
   res.status(200).json({
     status: 'success',
     data: {
       users,
     },
   });
-};
+});
 
 exports.createUser = (req, res) => {
   res

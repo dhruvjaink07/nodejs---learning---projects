@@ -11,9 +11,11 @@
   "author": "Dhruv Jain",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^5.1.1",
     "dotenv": "^16.4.5",
     "eslint": "^9.8.0",
     "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
     "mongoose": "^5.13.22",
     "morgan": "^1.10.0",
     "prettier": "^3.3.3",
