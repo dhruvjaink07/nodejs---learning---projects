@@ -17,6 +17,7 @@ app.use(express.static(`${__dirname}/public`)) // Use to server static files
 
 app.use((req, res, next) => {
   req.requestTime = new Date().toLocaleString();
+  // console.log(req.headers);
   next();
 });
 
